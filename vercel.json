@@ -1,0 +1,13 @@
+{
+    "routes": [
+      {
+        "src": "/api/(.*)",
+        "dest": "/api/file.js"
+      },
+      {
+        "src": "/(.*)",
+        "dest": "/climate-game/$1"
+      }
+    ]
+  }
+  
