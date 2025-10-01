@@ -4,17 +4,22 @@ import { MdPayment } from "react-icons/md";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { FaCheck } from "react-icons/fa6";
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 export default function DashboardHome() {
   const [user, setUser] = useState(null);
   const [referralCode, setReferralCode] = useState("");
+  const [coupon, setCoupon] = useState("");
+  const [couponConfirm, setCouponConfirm] = useState(false);
+  const [discount, setDiscount] = useState(null);
+
   useEffect(() => {
     const fetchMe = async () => {
       const res = await fetch("/api/me");
       if (res.ok) {
         const data = await res.json();
         setUser(data.user);
-        setReferralCode(data.refferalcode.code);
+        setReferralCode(data.referralCode.code);
       } else {
         setUser(null);
       }
@@ -28,6 +33,82 @@ export default function DashboardHome() {
         <p className="text-lg text-gray-600">در حال بارگذاری...</p>
       </div>
     );
+
+  const handlePay = async () => {
+    try {
+      const res = await fetch("/api/pay", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: user._id, code: coupon }),
+      });
+
+      // دریافت پاسخ JSON
+      const data = await res.json();
+
+      // بررسی وضعیت پاسخ
+      if (!res.ok) {
+        Swal.fire({
+          icon: "error",
+          title: "خطا",
+          text: data.message || "مشکلی پیش آمد",
+        });
+        setCoupon("");
+        setCouponConfirm(false);
+        return;
+      }
+
+      if (data.data.code) {
+        window.location.href = `https://www.zarinpal.com/pg/StartPay/${data.data.authority}`;
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire({
+        icon: "error",
+        title: "خطا",
+        text: "ارتباط با سرور برقرار نشد",
+      });
+    }
+  };
+
+  const handleCouponCode = async () => {
+    try {
+      if (couponConfirm) return;
+      // ارسال درخواست
+      const res = await fetch("/api/coupon/checkcoupon", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ code: coupon }),
+      });
+
+      // دریافت پاسخ JSON
+      const data = await res.json();
+
+      // بررسی وضعیت پاسخ
+      if (!res.ok) {
+        Swal.fire({
+          icon: "error",
+          title: "خطا",
+          text: data.message || "مشکلی پیش آمد",
+        });
+        setCoupon("");
+        setCouponConfirm(false);
+        return;
+      }
+      setCouponConfirm(true);
+      setDiscount(data.Discount);
+    } catch (err) {
+      console.error(err);
+      Swal.fire({
+        icon: "error",
+        title: "خطا",
+        text: "ارتباط با سرور برقرار نشد",
+      });
+    }
+  };
 
   return (
     <DashboardLayout>
@@ -47,9 +128,9 @@ export default function DashboardHome() {
               موفقیت انجام شد{" "}
             </div>
             <div>
-              <button className="bg-gray-100 p-2 rounded-lg shadow mt-2 cursor-pointer flex items-center gap-2 mx-auto">
+              <a href="/game" className="bg-gray-100 p-2 rounded-lg shadow mt-2 cursor-pointer flex items-center gap-2 mx-auto">
                 ورود به بازی
-              </button>
+              </a>
             </div>
           </div>
         ) : (
@@ -58,11 +139,48 @@ export default function DashboardHome() {
               <IoCloseCircleOutline className="text-2xl text-red-800 ml-2" />
               هنوز هزینه بازی را پرداخت نکرده اید
             </div>
-            <div className="text-2xl mb-1.5">
-              قیمت بازی : {user.organ.gamePrice.toLocaleString("fa")} تومان
+            {couponConfirm ? (
+              <div className="text-2xl mb-1.5">
+                قیمت بازی :{" "}
+                <span className="line-through text-base">
+                  {" "}
+                  {user.organ.gamePrice.toLocaleString("fa")} تومان{" "}
+                </span>
+                <span className="mr-2">
+                  {" "}
+                  {(
+                    user.organ.gamePrice -
+                    (user.organ.gamePrice * discount.value) / 100
+                  ).toLocaleString("fa")}{" "}
+                  تومان{" "}
+                </span>
+              </div>
+            ) : (
+              <div className="text-2xl mb-1.5">
+                قیمت بازی : {user.organ.gamePrice.toLocaleString("fa")} تومان
+              </div>
+            )}
+
+            <div className="flex">
+              <input
+                type="text"
+                placeholder="کد دعوت یا کد تخفیف"
+                className="bg-amber-50 border-0 rounded-lg h-8 text-center w-3x font-[sans-serif]"
+                value={coupon}
+                onChange={(e) => setCoupon(e.target.value)}
+              ></input>
+              <button
+                onClick={handleCouponCode}
+                className="bg-gray-800 text-white mr-2 p-1 rounded-sm cursor-pointer px-3 text-md"
+              >
+                اعمال کد
+              </button>
             </div>
             <div>
-              <button className="bg-green-300 p-2 rounded-lg shadow mt-2 cursor-pointer flex items-center gap-2 mx-auto">
+              <button
+                onClick={handlePay}
+                className="bg-green-300 p-2 rounded-lg shadow mt-2 cursor-pointer flex items-center gap-2 mx-auto"
+              >
                 {" "}
                 <MdPayment />
                 پرداخت
@@ -72,14 +190,18 @@ export default function DashboardHome() {
         )
       ) : (
         <>
-        <div className=" bg-red-300 rounded-lg shadow p-4 text-center mt-4 flex items-center justify-center gap-2 flex-col">
-          <p className="text-2xl text-center">متاسفیم ! بازی غیرفعال می باشد</p>
-          <p className="text-xl text-center mt-3">
+          <div className=" bg-red-300 rounded-lg shadow p-4 text-center mt-4 flex items-center justify-center gap-2 flex-col">
+            <p className="text-2xl text-center">
+              متاسفیم ! بازی غیرفعال می باشد
+            </p>
+            <p className="text-xl text-center mt-3">
               زمان اجرای بازی فقط از{" "}
-            {new Date(user.organ.startDate).toLocaleDateString("fa-IR")}
-            {"  "} تا {"  "} {new Date(user.organ.endDate).toLocaleDateString("fa-IR")}{"  "}
-            می‌باشد
-          </p>
+              {new Date(user.organ.startDate).toLocaleDateString("fa-IR")}
+              {"  "} تا {"  "}{" "}
+              {new Date(user.organ.endDate).toLocaleDateString("fa-IR")}
+              {"  "}
+              می‌باشد
+            </p>
           </div>
         </>
       )}

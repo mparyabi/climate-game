@@ -20,6 +20,10 @@ export async function POST(req) {
       return new Response(JSON.stringify({ message: "موبایل الزامی است" }), { status: 400 });
 
     const user = await User.findOne({ mobile });
+
+    if (!user)
+      return new Response(JSON.stringify({ message: "کاربری یافت نشد" }), { status: 401 });
+    
     if (!user.otpVerified)
       return new Response(JSON.stringify({ message: "کاربری یافت نشد" }), { status: 401 });
     

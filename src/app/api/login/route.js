@@ -14,6 +14,9 @@ export async function POST(req) {
     if (!mobile || !otp) return new Response(JSON.stringify({ message: "موبایل و OTP الزامی است" }), { status: 400 });
 
     const user = await User.findOne({ mobile });
+
+    if(!user) return new Response(JSON.stringify({ message: "کاربر یافت نشد" }), { status: 404 });
+
     if (!user.otpVerified) return new Response(JSON.stringify({ message: "کاربر یافت نشد" }), { status: 404 });
 
     if (!user.otpHash || !user.otpExpiresAt || Date.now() > user.otpExpiresAt.getTime()) {

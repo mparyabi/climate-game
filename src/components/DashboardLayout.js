@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { IoMdHome } from "react-icons/io";
-import { MdKeyboardDoubleArrowLeft, MdKeyboardDoubleArrowRight } from "react-icons/md";
+import { MdKeyboardDoubleArrowLeft, MdKeyboardDoubleArrowRight ,MdOutlinePayments} from "react-icons/md";
 
 
 
@@ -41,11 +41,11 @@ function DashboardLayout({ children }) {
           </Link>
 
           <Link
-            href="/dashboard/profile"
+            href="/user-dashboard/payment"
             className="flex items-center gap-2 rounded-lg px-3 py-2 hover:bg-blue-100 transition"
           >
-            <span className="material-icons">person</span>
-            {sidebarOpen && <span>پروفایل</span>}
+            <span className="material-icons"><MdOutlinePayments /></span>
+            {sidebarOpen && <span>سوابق پرداخت</span>}
           </Link>
 
           <Link

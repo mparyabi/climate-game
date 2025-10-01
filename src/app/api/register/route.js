@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { serialize } from "cookie";
 import DiscountCode from "@/models/DiscountCode";
+import Organ from "@/models/Organ";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const TOKEN_EXPIRES_IN = 60 * 60; // 1 ساعت
@@ -40,13 +41,13 @@ export async function POST(req) {
     user.otpVerified= true;
     user.isActive= true;
     await user.save();
-      
+    
+  
     //ساخت کد دعوت
     const code = await generateRandomCode();
     await DiscountCode.create({
     code,
     type:"referral",
-    value: 0,
     createdBy: user._id
     })
 

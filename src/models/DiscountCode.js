@@ -9,7 +9,7 @@ const discountCodeSchema = new mongoose.Schema(
       enum: ["coupon", "referral"], // کوپن عادی یا کد دعوت
       default: "coupon",
     },
-    value: { type: Number, default: 0 }, // مثلا 10 => 10 درصد
+    value: { type: Number}, // مثلا 10 => 10 درصد
     maxUsage: { type: Number, default: 0 },
     usedCount: { type: Number, default: 0 },
     startDate: Date,
