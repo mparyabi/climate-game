@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 
+
 function LoginPage({ params }) {
   const resolvedParams = React.use(params);
   const { organ } = resolvedParams;
@@ -15,6 +16,28 @@ function LoginPage({ params }) {
   const [message, setMessage] = useState("");
   const [counter, setCounter] = useState(0);
   const [disabled, setDisabled] = useState(false);
+  const [user , setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchMe = async () => {
+      const res = await fetch("/api/me");
+      if (res.ok) {
+        const data = await res.json();
+        setUser(data.user);
+  
+        // از data.user استفاده کن نه user
+        if (data.user.role === "user") {
+          router.push("/user-dashboard/home");
+        } else if (data.user.role === "admin") {
+          router.push("/admin-dashboard/home");
+        }
+  
+      } else {
+        setUser(null);
+      }
+    };
+    fetchMe();
+  }, [router]);
 
   // کانتر برای OTP
   useEffect(() => {
@@ -151,7 +174,7 @@ function LoginPage({ params }) {
                   : "دریافت کد یکبارمصرف"}
               </button>
             </form>
-            <Link className="flex justify-center mt-3" href="/register">
+            <Link className="flex justify-center mt-3" href={`register/${organ}`}>
               {" "}
               حساب کاربری ندارید؟ ثبت نام کنید...{" "}
             </Link>

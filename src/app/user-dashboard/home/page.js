@@ -5,6 +5,7 @@ import { IoCloseCircleOutline } from "react-icons/io5";
 import { FaCheck } from "react-icons/fa6";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import LogoutButton from "@/components/LogoutButton";
 
 export default function DashboardHome() {
   const [user, setUser] = useState(null);
@@ -112,9 +113,12 @@ export default function DashboardHome() {
 
   return (
     <DashboardLayout>
-      <h1 className="text-2xl font-bold text-gray-800 mb-4">
-        خانه داشبورد - {user.organ.name}
-      </h1>
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-bold text-gray-800">
+          خانه داشبورد - {user.organ.name}
+        </h1>
+        <LogoutButton organ={user.organ}/> {/* اینجا دکمه خروج */}
+      </div>
       <p className="text-xl">
         {" "}
         {user.firstName} {user.lastName} عزیز خوش آمدید!
@@ -128,7 +132,10 @@ export default function DashboardHome() {
               موفقیت انجام شد{" "}
             </div>
             <div>
-              <a href="/game" className="bg-gray-100 p-2 rounded-lg shadow mt-2 cursor-pointer flex items-center gap-2 mx-auto">
+              <a
+                href="/game"
+                className="bg-gray-100 p-2 rounded-lg shadow mt-2 cursor-pointer flex items-center gap-2 mx-auto"
+              >
                 ورود به بازی
               </a>
             </div>

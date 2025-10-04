@@ -1,4 +1,4 @@
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
 import DiscountCode from "@/models/DiscountCode";
@@ -9,8 +9,13 @@ const JWT_SECRET = process.env.JWT_SECRET;
 export async function getUserFromRequest() {
   await connectDB();
 
-  const cookieStore =await cookies();
-  const token = cookieStore.get("token")?.value;
+  const cookieStore = await cookies();
+  const headerList = await headers();
+
+  const token =
+    cookieStore.get("token")?.value ||
+    headerList.get("authorization")?.replace("Bearer ", "");
+
   if (!token) return null;
 
   let decoded;
