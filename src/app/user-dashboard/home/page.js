@@ -6,6 +6,7 @@ import { FaCheck } from "react-icons/fa6";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import LogoutButton from "@/components/LogoutButton";
+import CompeleteProfile from "@/components/CompeleteProfile";
 
 export default function DashboardHome() {
   const [user, setUser] = useState(null);
@@ -13,6 +14,7 @@ export default function DashboardHome() {
   const [coupon, setCoupon] = useState("");
   const [couponConfirm, setCouponConfirm] = useState(false);
   const [discount, setDiscount] = useState(null);
+  const [compeletedProfile , setCompeletedProfile] = useState(false);
 
   useEffect(() => {
     const fetchMe = async () => {
@@ -21,6 +23,7 @@ export default function DashboardHome() {
         const data = await res.json();
         setUser(data.user);
         setReferralCode(data.referralCode.code);
+        setCompeletedProfile(data.user.isCompeletedProfile)
       } else {
         setUser(null);
       }
@@ -117,7 +120,7 @@ export default function DashboardHome() {
         <h1 className="text-2xl font-bold text-gray-800">
           خانه داشبورد - {user.organ.name}
         </h1>
-        <LogoutButton organ={user.organ}/> {/* اینجا دکمه خروج */}
+        <LogoutButton organ={user.organ} /> {/* اینجا دکمه خروج */}
       </div>
       <p className="text-xl">
         {" "}
@@ -132,12 +135,22 @@ export default function DashboardHome() {
               موفقیت انجام شد{" "}
             </div>
             <div>
-              <a
-                href="/game"
-                className="bg-gray-100 p-2 rounded-lg shadow mt-2 cursor-pointer flex items-center gap-2 mx-auto"
-              >
-                ورود به بازی
-              </a>
+              {compeletedProfile ? (
+                <a
+                  href="/game"
+                  className="bg-gray-100 p-2 rounded-lg shadow mt-2 cursor-pointer flex items-center gap-2 mx-auto"
+                >
+                  ورود به بازی
+                </a>
+              ) : (
+                <>
+                  <p className="mt-1.5 mb-1.5 font-bold">
+                    {" "}
+                    لطفا جهت ورود به بازی اطلاعات پروفایل خود را کامل کنید{" "}
+                  </p>
+                  <CompeleteProfile id={user._id} setCompeletedProfile={setCompeletedProfile}/>
+                </>
+              )}
             </div>
           </div>
         ) : (

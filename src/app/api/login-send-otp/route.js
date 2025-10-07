@@ -44,7 +44,6 @@ export async function POST(req) {
     user.otpExpiresAt = expires;
     await user.save();
     
-    console.log("otp Code: " , otp);
     const result = await sendOtp(user.mobile, otp);
     if (!result.success) {
       return new Response(JSON.stringify({ message: "ارسال پیامک ناموفق بود" }), { status: 500 });

@@ -17,6 +17,20 @@ function RegisterPage({ params }) {
   const [message, setMessage] = useState("");
   const [counter, setCounter] = useState(0);
   const [disabled, setDisabled] = useState(false);
+  const [organData, setOrganData] = useState("");
+
+  useEffect(() => {
+    const getOrganName = async () => {
+      const res = await fetch(`/api/organ/byName/${organ}`);
+      const data = await res.json();
+      if (!data.organ) {
+        router.push("/");
+        return;
+      }
+      setOrganData(data.organ);
+    };
+    getOrganName();
+  }, []);
 
   // کانتر برای OTP
   useEffect(() => {
@@ -132,6 +146,8 @@ function RegisterPage({ params }) {
   return (
     <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 p-4">
       <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl">
+        <img src={organData.img} className="w-20 m-auto pb-2.5" />
+        <p className="text-center mb-2 text-xl">{organData.name}</p>
         <h1 className="mb-6 text-center text-2xl font-bold text-gray-800">
           ثبت‌نام
         </h1>
@@ -213,7 +229,7 @@ function RegisterPage({ params }) {
             </p>
           </form>
         )}
-        <Link className="flex justify-center mt-3" href="/login">
+        <Link className="flex justify-center mt-3" href={`/login/${organ}`}>
           {" "}
           آیا حساب کاربری دارید؟ وارد شوید...{" "}
         </Link>

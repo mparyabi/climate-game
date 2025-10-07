@@ -30,6 +30,7 @@ export async function middleware(req) {
       const hasPaid = await User.exists({
         _id: decoded.userId,
         payStatus: true,
+        isCompeletedProfile : true
       });
   
       if (!hasPaid) {

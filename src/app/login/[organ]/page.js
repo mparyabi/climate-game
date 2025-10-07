@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 
-
 function LoginPage({ params }) {
   const resolvedParams = React.use(params);
   const { organ } = resolvedParams;
@@ -16,7 +15,21 @@ function LoginPage({ params }) {
   const [message, setMessage] = useState("");
   const [counter, setCounter] = useState(0);
   const [disabled, setDisabled] = useState(false);
-  const [user , setUser] = useState(null);
+  const [user, setUser] = useState(null);
+  const [organData, setOrganData] = useState("");
+
+  useEffect(() => {
+    const getOrganName = async () => {
+      const res = await fetch(`/api/organ/byName/${organ}`);
+      const data = await res.json();
+      if (!data.organ) {
+        router.push("/");
+        return;
+      }
+      setOrganData(data.organ);
+    };
+    getOrganName();
+  }, []);
 
   useEffect(() => {
     const fetchMe = async () => {
@@ -24,14 +37,13 @@ function LoginPage({ params }) {
       if (res.ok) {
         const data = await res.json();
         setUser(data.user);
-  
+
         // از data.user استفاده کن نه user
         if (data.user.role === "user") {
           router.push("/user-dashboard/home");
         } else if (data.user.role === "admin") {
           router.push("/admin-dashboard/home");
         }
-  
       } else {
         setUser(null);
       }
@@ -77,7 +89,7 @@ function LoginPage({ params }) {
           setMessage(
             <>
               هنوز ثبت نام نکرده اید{" "}
-              <Link href="/register" className="text-blue-600 underline">
+              <Link href={`/register/${organ}`} className="text-blue-600 underline">
                 لطفاً ثبت نام کنید
               </Link>{" "}
               یا شماره دیگری استفاده کنید.
@@ -145,6 +157,8 @@ function LoginPage({ params }) {
   return (
     <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100 p-4">
       <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl">
+        <img src={organData.img} className="w-20 m-auto pb-2.5"/>
+        <p className="text-center mb-2 text-xl">{organData.name}</p>
         <h1 className="mb-6 text-center text-2xl font-bold text-gray-800">
           ورود
         </h1>
@@ -174,7 +188,10 @@ function LoginPage({ params }) {
                   : "دریافت کد یکبارمصرف"}
               </button>
             </form>
-            <Link className="flex justify-center mt-3" href={`register/${organ}`}>
+            <Link
+              className="flex justify-center mt-3"
+              href={`/register/${organ}`}
+            >
               {" "}
               حساب کاربری ندارید؟ ثبت نام کنید...{" "}
             </Link>

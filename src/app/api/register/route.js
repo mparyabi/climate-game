@@ -4,10 +4,9 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { serialize } from "cookie";
 import DiscountCode from "@/models/DiscountCode";
-import Organ from "@/models/Organ";
 
 const JWT_SECRET = process.env.JWT_SECRET;
-const TOKEN_EXPIRES_IN = 60 * 60; // 1 ساعت
+const TOKEN_EXPIRES_IN = 60 * 60 * 3; // 3 ساعت
 
 async function generateRandomCode(length = 5) {
   const chars = 'ABDCDEFGHJKLMNPQRSTUVWXYZ0123456789';

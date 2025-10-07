@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 import { serialize } from "cookie";
 
 const JWT_SECRET = process.env.JWT_SECRET;
-const TOKEN_EXPIRES_IN = 60 * 60; // 1 ساعت
+const TOKEN_EXPIRES_IN = 60 * 60 * 3; // 3 ساعت
 
 export async function POST(req) {
   try {

@@ -3,8 +3,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { IoMdHome } from "react-icons/io";
 import { MdKeyboardDoubleArrowLeft, MdKeyboardDoubleArrowRight ,MdOutlinePayments} from "react-icons/md";
-
-
+import { CgProfile } from "react-icons/cg";
 
 // Props: children => محتوای هر صفحه داخلی داشبورد
 function DashboardLayout({ children }) {
@@ -49,11 +48,11 @@ function DashboardLayout({ children }) {
           </Link>
 
           <Link
-            href="/dashboard/settings"
+            href="/user-dashboard/profile"
             className="flex items-center gap-2 rounded-lg px-3 py-2 hover:bg-blue-100 transition"
           >
-            <span className="material-icons">settings</span>
-            {sidebarOpen && <span>تنظیمات</span>}
+            <span className="material-icons"><CgProfile/></span>
+            {sidebarOpen && <span>پروفایل</span>}
           </Link>
         </nav>
       </aside>

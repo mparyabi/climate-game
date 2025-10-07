@@ -8,11 +8,11 @@ export async function sendOtp(mobile, otp) {
     }
   
     const params = new URLSearchParams();
-    params.append("username", process.env.FARAPAYAMAK_USERNAME);
-    params.append("password", process.env.FARAPAYAMAK_PASSWORD);
+    params.append("username", process.env.MELLIPAYAMAK_USERNAME);
+    params.append("password", process.env.MELLIPAYAMAK_PASSWORD);
     params.append("to", mobile);
     params.append("text", `${otp}`);
-    params.append("bodyId", 371255);
+    params.append("bodyId", 376705);
   
     const response = await fetch("https://rest.payamak-panel.com/api/SendSMS/BaseServiceNumber", {
       method: "POST",
@@ -21,7 +21,7 @@ export async function sendOtp(mobile, otp) {
     });
   
     const resultText = await response.text();
-    console.log("Farapayamak response:", resultText);
+    console.log("MELLIPAYAMAK response:", resultText);
   
     if (!response.ok) {
       return { success: false, message: resultText };

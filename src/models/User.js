@@ -39,8 +39,8 @@ const userSchema = new mongoose.Schema(
       type: String, // کد OTP فعلی
     },
     otpHash: {
-    type: String,
-    default: "undefined"
+      type: String,
+      default: "undefined",
     },
     otpExpiresAt: {
       type: Date, // زمان انقضای کد
@@ -53,15 +53,38 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0, // میتونی برای محدود کردن اسپم استفاده کنی
     },
-    payStatus:{
-      type:Boolean,
-      default:false
-    }, 
-    organ: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: "Organ", 
-        required: true 
-      }
+    payStatus: {
+      type: Boolean,
+      default: false,
+    },
+    organ: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Organ",
+      required: true,
+    },
+    isCompeletedProfile: {
+      type: Boolean,
+      default: false,
+    },
+    gender: {
+      type: String,
+      enum: ["male" , "female"]
+    },
+    studyField:{
+      type: String
+    },
+    educationLevel:{
+      type: String
+    },
+    educationLocation: {
+      type: String
+    },
+    job:{
+      type: String
+    },
+    jobLocationName:{
+      type: String
+    }
   },
   { timestamps: true }
 );
