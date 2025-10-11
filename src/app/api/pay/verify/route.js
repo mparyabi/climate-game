@@ -61,12 +61,6 @@ export async function POST(req) {
     const data = await res.json();
 
     if (data?.data?.code === 100 || data?.data?.code === 101) {
-      if (data.data.amount !== payment.amount) {
-        return NextResponse.json(
-          { message: "مبلغ پرداخت معتبر نیست" },
-          { status: 400 }
-        );
-      }
 
       payment.card_hash = data.data.card_hash;
       payment.card_pan = data.data.card_pan;

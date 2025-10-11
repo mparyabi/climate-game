@@ -22,7 +22,7 @@ export async function POST(req) {
     const mobile = user.mobile;
     const email = 'mparyabi@gmail.com';
     const description = `پرداخت بازی آب و هوا مربوط به ${user.firstName} ${user.lastName} از ${userOrgan.name}` ;
-    const callback_url = 'http://localhost:3000/verify' ;
+    const callback_url = 'https://netzeroway.ir/verify' ;
 
     if (Discount) {
     if (Discount.type === 'referral'){
