@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 import { connectDB } from "./lib/mongodb";
 import User from "./models/User";
+import Decision from "./models/Decision";
 
 export const runtime = "nodejs";
 
@@ -36,6 +37,13 @@ export async function middleware(req) {
       if (!hasPaid) {
         return NextResponse.redirect(new URL("/user-dashboard/home", req.nextUrl.origin));
       }
+
+      const totalChance = await Decision.find({userId:decoded.userId});
+
+      if (totalChance?.length >= 3) {
+          return NextResponse.redirect(new URL("/user-dashboard/home", req.nextUrl.origin));
+      }
+      
     }
 
     return NextResponse.next();

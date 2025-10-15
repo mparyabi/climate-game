@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import LogoutButton from "@/components/LogoutButton";
 import CompeleteProfile from "@/components/CompeleteProfile";
+import GameHistory from "@/components/GameHistory";
 
 export default function DashboardHome() {
   const [user, setUser] = useState(null);
@@ -15,7 +16,8 @@ export default function DashboardHome() {
   const [couponConfirm, setCouponConfirm] = useState(false);
   const [discount, setDiscount] = useState(null);
   const [compeletedProfile , setCompeletedProfile] = useState(false);
-
+  const [disabelGame, setDisableGame] = useState(false);
+  
   useEffect(() => {
     const fetchMe = async () => {
       const res = await fetch("/api/me");
@@ -120,7 +122,7 @@ export default function DashboardHome() {
         <h1 className="text-2xl font-bold text-gray-800">
           خانه داشبورد - {user.organ.name}
         </h1>
-        <LogoutButton organ={user.organ} /> {/* اینجا دکمه خروج */}
+        <LogoutButton organ={user.organ}  /> {/* اینجا دکمه خروج */}
       </div>
       <p className="text-xl">
         {" "}
@@ -137,8 +139,9 @@ export default function DashboardHome() {
             <div>
               {compeletedProfile ? (
                 <a
-                  href="/game"
-                  className="bg-gray-100 p-2 rounded-lg shadow mt-2 cursor-pointer flex items-center gap-2 mx-auto"
+                  href={disabelGame ? "#" : "/game" }
+                  
+                  className={disabelGame ? "bg-gray-100 p-2 rounded-lg shadow mt-2 cursor-pointer flex items-center gap-2 mx-auto" : "bg-gray-100 p-2 rounded-lg shadow mt-2 cursor-pointer flex items-center gap-2 mx-auto" }
                 >
                   ورود به بازی
                 </a>
@@ -235,6 +238,7 @@ export default function DashboardHome() {
           تخفیف بگیرند.
         </p>{" "}
       </div>
+      <GameHistory user={user} setDisableGame={setDisableGame}/>
     </DashboardLayout>
   );
 }

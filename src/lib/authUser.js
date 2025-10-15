@@ -3,6 +3,7 @@ import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
 import DiscountCode from "@/models/DiscountCode";
 import jwt from "jsonwebtoken";
+import Organ from "@/models/Organ";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
